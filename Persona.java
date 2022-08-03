@@ -36,6 +36,8 @@ public class Persona {
         map.put("10", "R");
         map.put("11", "S");
         map.put("12", "T");
+        //ciao
+        map.put("13", "T");
         return map.get(mese);
     }
     public String Cognome(String Cognome){
