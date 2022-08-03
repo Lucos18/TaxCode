@@ -1,7 +1,8 @@
 
+import java.io.IOException;
 import java.util.*;
 class Main{
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, InterruptedException {
         Scanner sc = new Scanner(System.in);
         System.out.println("Inserisci le seguenti informazioni per calcolare il tuo codice fiscale: ");
         System.out.println("Nome: ");
@@ -20,20 +21,12 @@ class Main{
         System.out.println("Comune: ");
         String comune = sc.nextLine();
         Persona persona = new Persona(nome,cognome,dataN,sesso,comune);
-        String CFcognome = persona.Cognome(persona.cognome);
-        String CFnome = persona.nome(persona.nome);
         String[] data = dataN.split("/");
         String Giorno = data[0];
         String Mese = data[1];
         String Anno = data[2];
-        String AnnoCF = Anno.substring(Anno.length()-2);
-        String MeseCF = persona.mese(Mese);
-        String GiornoSesso = persona.GiornoSesso(Giorno,sesso);
-        System.out.print(CFcognome);
-        System.out.print(CFnome);
-        System.out.print(AnnoCF);
-        System.out.print(MeseCF);
-
+        String CFProvv = persona.Cognome(persona.cognome) + persona.nome(persona.nome) + Anno.substring(Anno.length()-2) + persona.mese(Mese) + persona.GiornoSesso(Giorno,persona.sesso) + persona.GetRequestEx(persona.comune);
+        String CF = CFProvv + persona.codiceControllo(CFProvv);
         sc.close();
     }
 }

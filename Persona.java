@@ -1,5 +1,16 @@
+import netscape.javascript.JSObject;
+
 import java.util.ArrayList;
 import java.util.*;
+
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+
+
 public class Persona {
     String nome;
     String cognome;
@@ -14,12 +25,29 @@ public class Persona {
         this.sesso = sesso;
         this.comune = comune;
     }
+    public String codiceControllo(String CVProvv){
+
+        return ("ciao");
+    }
+    public String GetRequestEx(String comune) throws IOException, InterruptedException {
+
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create("https://www.gerriquez.com/comuni/ws.php?dencomune=" + comune))
+                    .build();
+
+            HttpResponse<String> response = client.send(request,
+                    HttpResponse.BodyHandlers.ofString());
+            JSObject jsonObject = JSONSerializer
+            System.out.println(response.body());
+            return ("ciao");
+    }
     public String GiornoSesso(String Giorno, String sesso)
     {
-        //int CFgiorno = Integer.parseInt(Giorno);
-        //if (Integer.parseInt(Giorno)  >= 0 && Integer.parseInt(Giorno) <= 9) CFgiorno = 01;
-        //if (sesso == "Femmina") CFgiorno = CFgiorno + 40;
-        //return CFgiorno;
+        int CFgiorno = Integer.parseInt(Giorno);
+        //if (Integer.parseInt(Giorno)  >= 0 && Integer.parseInt(Giorno) <= 9) CFgiorno = 0 + CFgiorno;
+        if (sesso == "Femmina") CFgiorno = CFgiorno + 40;
+        return String.valueOf(CFgiorno);
     }
     public String mese(String mese)
     {
@@ -36,8 +64,6 @@ public class Persona {
         map.put("10", "R");
         map.put("11", "S");
         map.put("12", "T");
-        //ciao
-        map.put("13", "T");
         return map.get(mese);
     }
     public String Cognome(String Cognome){
