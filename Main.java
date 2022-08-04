@@ -22,6 +22,7 @@ class Main{
         while (sesso == "Maschio" || sesso == "Femmina");
         System.out.println("Comune: ");
         String comune = sc.nextLine();
+        comune = comune.replace(" ","%20");
         //Creazione di un oggetto di tipo persona
         Persona persona = new Persona(nome,cognome,dataN,sesso,comune);
         //Divisione della data di nascita in Giorno/Mese/Anno
