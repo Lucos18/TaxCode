@@ -10,7 +10,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.stream.Stream;
+
 
 
 public class Persona {
@@ -28,18 +28,19 @@ public class Persona {
         this.sesso = sesso;
         this.comune = comune;
     }
-
+    //Dichiarazione di un vettore contenente tutte le vocali
+    char[] vowels = {'a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'};
     public String codiceControllo(String CVProvv) {
 
         String res = null;
 
-        // scompongo cf in array char
+        //Il codice fiscale viene suddiviso in un array di caratteri
         List<Character> cf_scomposto = new ArrayList<>();
         for (char ch : CVProvv.toUpperCase().toCharArray()) {
             cf_scomposto.add(ch);
         }
 
-        // map valori dispari
+        //mappa utilizzata per i valori pari
         Map<Character, String> valore_pari = new HashMap<Character, String>();
         valore_pari.put('A', "0");
         valore_pari.put('B', "1");
@@ -78,7 +79,7 @@ public class Persona {
         valore_pari.put('Y', "24");
         valore_pari.put('Z', "25");
 
-        // map valori dispari
+        //mappa utilizzata per i valori dispari
         Map<Character, String> valore_dispari = new HashMap<Character, String>();
         valore_dispari.put('A', "1");
         valore_dispari.put('B', "0");
@@ -117,7 +118,7 @@ public class Persona {
         valore_dispari.put('Y', "24");
         valore_dispari.put('Z', "23");
 
-        // map lettera di controllo
+        //mappa utilizzata per trovare la lettera di controllo
         HashMap<Integer, String> lettera_di_controllo = new HashMap<Integer, String>();
         lettera_di_controllo.put(0, "A");
         lettera_di_controllo.put(1, "B");
@@ -159,8 +160,9 @@ public class Persona {
     }
 
     public String GetRequestEx(String comune) throws IOException, InterruptedException {
-
+        //Creazione del Client per la richiesta Http
         HttpClient client = HttpClient.newHttpClient();
+        //Creazione della richiesta da compiere
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("https://www.gerriquez.com/comuni/ws.php?dencomune=" + comune))
                 .build();
@@ -170,6 +172,7 @@ public class Persona {
 
         String risposta_stringa = response.body();
 
+        //Creazione di un JSON parser e di un JSONArray per ottenere le informazioni dalla stringa ricevuta
         JSONParser jp = new JSONParser();
         JSONArray jrr = new JSONArray();
 
@@ -181,16 +184,17 @@ public class Persona {
 
         String ass = (String) ((JSONObject) jrr.get(0)).get("CodiceCatastaleDelComune");
 
-        System.out.println(ass);
 
-        return (ass);
+        return ass;
     }
 
     public String GiornoSesso(String Giorno, String sesso) {
+        //Calcolo del codice inerente al giorno di nascita e al sesso della persona
+        String CFgiornoR = Giorno;
         int CFgiorno = Integer.parseInt(Giorno);
-        //if (Integer.parseInt(Giorno)  >= 0 && Integer.parseInt(Giorno) <= 9) CFgiorno = 0 + CFgiorno;
-        if (sesso == "Femmina") CFgiorno = CFgiorno + 40;
-        return String.valueOf(CFgiorno);
+        if (CFgiorno  >= 0 && CFgiorno <= 9) CFgiornoR = "0" + String.valueOf(CFgiorno);
+        if (sesso == "Femmina") CFgiornoR = String.valueOf(CFgiorno) + "40";
+        return CFgiornoR;
     }
 
     public String mese(String mese) {
@@ -211,15 +215,19 @@ public class Persona {
     }
 
     public String Cognome(String Cognome) {
-        char[] vowels = {'a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'};
+
         char[] ch = Cognome.toCharArray();
+        //Variabile utilizzata per contare le consonanti trovate
         int numConsonanti = 0;
+        //Variabile utilizzata per contare le Vocali trovate
         int numVocali = 0;
         String CFcognome = "";
         boolean vocale = false;
+        //cicla finchè non trova 3 consonanti oppure non finiscono le lettere da controllare
         for (int i = 0; i < Cognome.length(); i++) {
             if (numConsonanti == 3) break;
             for (int j = 0; j < vowels.length; j++) {
+                //Se la lettera del cognome è uguale ad una vocale, setta la vocale a true
                 if (ch[i] == vowels[j]) {
                     vocale = true;
                     break;
@@ -232,9 +240,11 @@ public class Persona {
             }
         }
         if (numConsonanti < 3) {
+            //Cicloo utile per trovare le vocali in caso di mancanza di consonanti
             for (int i = 0; i < Cognome.length(); i++) {
                 if ((numConsonanti + numVocali) == 3) break;
                 for (int j = 0; j < vowels.length; j++) {
+                    //Se la lettera del cognome è uguale ad una vocale, setta la vocale a true
                     if (ch[i] == vowels[j]) {
                         vocale = true;
                         break;
@@ -246,18 +256,19 @@ public class Persona {
                 }
             }
         }
+        //Ritorna il cognome sottoforma di codice per il Codice Fiscale
         return CFcognome;
     }
 
     public String nome(String nome) {
-        char[] vowels = {'a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'};
+
         char[] nomech = nome.toCharArray();
         int numConsonanti = 0;
         int numVocali = 0;
         String CFnome = "";
         boolean vocale = false;
         for (int i = 0; i < nome.length(); i++) {
-            if (numConsonanti == 3) break;
+
             for (int j = 0; j < vowels.length; j++) {
                 if (nomech[i] == vowels[j]) {
                     vocale = true;
@@ -271,8 +282,8 @@ public class Persona {
             }
         }
         if (numConsonanti < 3) {
+            //Ciclo utile per trovare le vocali in caso di mancanza di consonanti
             for (int i = 0; i < nome.length(); i++) {
-                if ((numConsonanti + numVocali) == 3) break;
                 for (int j = 0; j < vowels.length; j++) {
                     if (nomech[i] == vowels[j]) {
                         vocale = true;
@@ -285,6 +296,20 @@ public class Persona {
                 }
             }
         }
-        return CFnome;
+
+        String CFnomeComp;
+
+        //Se il numero è maggiore o uguale a 4 vengono prese le lettere numero 1, 3, 4
+        if (numConsonanti >= 4)
+        {
+            CFnomeComp = CFnome.substring(0, 1) + CFnome.substring(2, 4);
+        }
+        //Se il numero è maggiore o uguale a 4 vengono prese le lettere numero 1, 2, 3
+        else
+        {
+            CFnomeComp = CFnome.substring(0, 3);
+        }
+
+        return CFnomeComp;
     }
 }
